@@ -1,0 +1,29 @@
+# YAML
+
+task_types:
+    - worker
+    - backup
+
+api:
+    port: 8888
+    wait_for_endpoints_timeout: 5
+
+manager:
+    db:
+        verbose: False
+        uri: mysql://tasker:Ooceish8aemu@127.0.0.1:3307/tasker
+
+    message_queue:
+        host: 127.0.0.1
+        port: 5672
+        username: tasker
+        password: afieB1nae4nu
+        virtual_host: tasker
+        exchange: tasker_local
+        queue: tasker_local
+        routing_key: tasker_local
+
+rabbitmq:
+    apiurl: http://localhost:55672/api
+    username: guest
+    password: guest

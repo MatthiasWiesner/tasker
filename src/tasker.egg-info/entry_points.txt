@@ -1,0 +1,5 @@
+[console_scripts]
+initialize = tasker.manager.initialize:main
+manager = tasker.manager:main
+api = tasker.api:main
+

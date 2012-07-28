@@ -1,0 +1,6 @@
+simplejson
+pyyaml
+pika
+sqlalchemy
+MySQL-python
+tornado
