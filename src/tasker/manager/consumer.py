@@ -6,8 +6,10 @@ from tasker.manager.connectionHandler import ConnectionHandler
 from tasker.manager.taskStorage import TaskStorage
 from tasker.manager.taskResponseStorage import TaskResponseStorage
 from tasker.manager.task import Task  # @UnusedImport
+from tasker.manager.task import taskStatus
 import tasker.manager.handler
 from tasker.manager.taskResponse import taskResponseStatus
+from tasker.config import config
 
 log = logging.getLogger()
 
@@ -53,9 +55,9 @@ class Consumer(ConnectionHandler):
         log.info('received message {0}'.format(task))
 
         taskResponseStorage = TaskResponseStorage()
-        taskResponse = taskResponseStorage.save(task.id, self.config.endpoint)
+        taskResponse = taskResponseStorage.save(task.id, config['endpoint'])
 
-        # load handler module
+        # load and run handler module
         try:
             f, filename, description = imp.find_module(task.type, tasker.manager.handler.__path__)
         except ImportError:
@@ -63,12 +65,26 @@ class Consumer(ConnectionHandler):
             return
         handler = imp.load_module(task.type, f, filename, description)
         taskResponse = handler.handle_task(task, taskResponse)
+
         if taskResponse.payload:
             taskResponse.payload = json.dumps(taskResponse.payload)
         taskResponse.status = taskResponseStatus.index('FINISHED')
         taskResponseStorage.update(taskResponse)
         task = taskStorage.update(task)
 
+        # update task status, if all endpoint are finished
+        if task.endpoints and task.status == taskStatus.index('SENT'):
+            endpoint_set = set(json.loads(task.endpoints))
+            if self._endpoints_completed(endpoint_set, task):
+                task.status = taskStatus.index('DONE')
+                taskStorage.update(task)
+
     def close(self):
         self.channel.basic_cancel(consumer_tag="Consumer.{0}".format(self.exchange))
         self.channel.stop_consuming()
+
+    def _endpoints_completed(self, endpoint_set, task):
+        taskResponseStorage = TaskResponseStorage()
+        taskResponseList = taskResponseStorage.get_by_task(task.id)
+        received_set = set([tr.endpoint for tr in taskResponseList if tr.status == taskResponseStatus.index('FINISHED')])
+        return endpoint_set.issubset(received_set)

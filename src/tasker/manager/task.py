@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.dialects.mysql import MEDIUMTEXT
 from tasker.manager.storage import Base
 
-taskStatus = ['CREATED', 'SENT', 'DONE', 'INCOMPLETE']
+taskStatus = ['CREATED', 'SENT', 'DONE']
 
 
 class Task(Base):

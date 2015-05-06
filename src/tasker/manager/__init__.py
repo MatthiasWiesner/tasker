@@ -4,9 +4,7 @@ import logging
 from optparse import OptionParser
 from traceback import format_exc
 from tasker.config import init_config
-from tasker.config import get_config
 from tasker.log import init_logger
-from tasker.manager.consumer import Consumer
 
 
 def main():
@@ -21,12 +19,14 @@ def main():
     init_logger(options.mode)
     init_config(options.mode)
 
-    config = get_config()
-    if not options.tasktype in config.task_types:
-        parser.error("tasktype '{0}' is not in {1}".format(options.tasktype, str(config.task_types)))
+    from tasker.manager.consumer import Consumer
+    from tasker.config import config
+
+    if not options.tasktype in config['task_types']:
+        parser.error("tasktype '{0}' is not in {1}".format(options.tasktype, str(config['task_types'])))
         return
 
-    config.endpoint = options.endpoint
+    config['endpoint'] = options.endpoint
 
     log = logging.getLogger()
     log.info('start consumer: {0}'.format(options.tasktype))

@@ -12,6 +12,10 @@ class TaskStorage(Storage):
         task = self.session.query(Task).get(task_id)
         return task
 
+    def get_by_identifier(self, task_ident):
+        task = self.session.query(Task).filter_by(identifier=task_ident).first()
+        return task
+
     def save(self, identifier, task_type, payload='', endpoints=''):
         task = Task(identifier, task_type, payload, endpoints)
         self.session.add(task)

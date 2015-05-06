@@ -8,5 +8,3 @@ def init_logger(mode):
     f = open(path).read()
     config = yaml.load(f)
     dictConfig(config)
-
-

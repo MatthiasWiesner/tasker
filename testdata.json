@@ -1,0 +1,10 @@
+{
+   "identifier":"e7bd91d0-16ad-11e2-892e-0800200c9a66",
+   "payload":{
+    "foo":"bar"
+   },
+   "endpoints":[
+    "console1",
+    "console2"
+   ]
+}

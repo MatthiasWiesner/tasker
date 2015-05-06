@@ -6,12 +6,12 @@ task_types:
 
 api:
     port: 8888
-    wait_for_endpoints_timeout: 5
+    wait_for_endpoints_timeout: 30
 
 manager:
     db:
         verbose: False
-        uri: mysql://tasker:Ooceish8aemu@127.0.0.1:3307/tasker
+        uri: mysql://tasker:tasker@localhost:3307/tasker
 
     message_queue:
         host: 127.0.0.1
@@ -24,6 +24,6 @@ manager:
         routing_key: tasker_local
 
 rabbitmq:
-    apiurl: http://localhost:55672/api
+    apiurl: http://localhost:15672/api
     username: guest
     password: guest

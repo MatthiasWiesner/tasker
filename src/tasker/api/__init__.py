@@ -6,24 +6,23 @@ from optparse import OptionParser
 import tornado.ioloop
 
 from tasker.config import init_config
-from tasker.config import get_config
 from tasker.log import init_logger
-from tasker.api.taskHandler import TaskHandler
 
 
 def run():
-    config = get_config()
+    from tasker.api.taskHandler import TaskHandler
+    from tasker.config import config
     app_list = []
 
-    for task_type in config.task_types:
+    for task_type in config['task_types']:
         # define for every task_type a taskHandler class
         clazz = type('{0}TaskHandler'.format(task_type.capitalize()),
             (TaskHandler,), {'task_type': task_type})
         app_list.append((r"/{0}".format(task_type), clazz))
-        app_list.append((r"/{0}/([0-9]+)".format(task_type), clazz))
+        app_list.append((r"/{0}/([0-9a-z-]+)".format(task_type), clazz))
 
-    application = tornado.web.Application(app_list)
-    application.listen(config.api.port)
+    application = tornado.web.Application(app_list, debug=True)
+    application.listen(config['api']['port'])
     tornado.ioloop.IOLoop.instance().start()
 
 

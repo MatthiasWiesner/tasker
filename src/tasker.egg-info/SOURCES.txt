@@ -23,4 +23,5 @@ src/tasker/manager/taskResponse.py
 src/tasker/manager/taskResponseStorage.py
 src/tasker/manager/taskStorage.py
 src/tasker/manager/handler/__init__.py
+src/tasker/manager/handler/backup.py
 src/tasker/manager/handler/worker.py
